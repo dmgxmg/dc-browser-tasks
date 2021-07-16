@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "properties": {
+    "taskMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pageName": {
+            "type": "string"
+          },
+          "pageUrl": {
+            "type": "string"
+          },
+          "jsName": {
+            "type": "string"
+          },
+          "jsUrl": {
+            "type": "string"
+          },
+          "dailyOnce": {
+            "type": "boolean"
+          },
+          "refId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": ["pageName", "pageUrl"]
+      }
+    },
+    "groupMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "taskIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": ["groupName", "taskIds"]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": ["taskMap", "groupMap"]
+}
