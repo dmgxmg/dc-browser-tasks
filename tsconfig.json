@@ -7,11 +7,13 @@
     ],
     "target": "esnext",
     "sourceMap": false,
+    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true
   },
   "include": [
     "src",
-    "*.ts"
+    "*.ts",
+    "puppeteer/index.ts"
   ]
 }

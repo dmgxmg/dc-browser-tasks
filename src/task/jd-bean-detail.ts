@@ -1,8 +1,10 @@
 import { fetchJson } from "../util/fetch";
 import { DateTime } from "../model/DateTime";
 import { toUrlString } from "../util/url";
-import { PageFlow } from "../model/PageFlow";
-import { notifyTaskResult } from "../util/notification";
+import { pageFlow } from "../flow/page";
+import { taskResultAction } from "../util/notification";
+import { flowStep } from "../flow/flow";
+import { TaskActions } from "../types";
 
 type BeanDetail = {
   amount: string;
@@ -78,9 +80,9 @@ async function fetchBeanDetailList(days: number) {
   });
 }
 
-PageFlow.of("https://bean.m.jd.com/beanDetail/index.action")
-  .step(async () => {
-    const dayBalanceList = await fetchBeanDetailList(2);
+pageFlow(
+  async function* (): AsyncGenerator<any, TaskActions, DayBalance[]> {
+    const dayBalanceList = yield flowStep(() => fetchBeanDetailList(2), "Main");
 
     const message = dayBalanceList
       .map(({ date, inAmount, outAmount }) => {
@@ -90,7 +92,9 @@ PageFlow.of("https://bean.m.jd.com/beanDetail/index.action")
       })
       .join("\n");
 
-    notifyTaskResult({ message });
-  }, "MainStep")
-  .execute()
-  .then();
+    return taskResultAction(message);
+  },
+  {
+    urls: "https://bean.m.jd.com/beanDetail/index.action",
+  }
+);

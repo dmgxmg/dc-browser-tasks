@@ -1,19 +1,24 @@
 import { isString } from "../util/string";
 
-type DateValue = string | number | Date;
+type DateTimeValue = string | number | Date;
+type DateTimeInput = DateTimeValue | DateTime;
 
 export class DateTime {
-  static of(value: DateValue | DateTime = Date.now()) {
+  static of(value: DateTimeInput = Date.now()) {
     return new this(value instanceof DateTime ? value.toDate() : value);
   }
   static now() {
     return this.of();
   }
 
-  private readonly value: DateValue;
-  private constructor(value: DateValue) {
+  private readonly value: DateTimeValue;
+  private constructor(value: DateTimeInput) {
     //Safari bug fix
-    this.value = isString(value) ? value.replace(/-/g, "/") : value;
+    this.value = isString(value)
+      ? value.replace(/-/g, "/")
+      : value instanceof DateTime
+      ? value.toDate()
+      : value;
   }
 
   toDate() {
@@ -37,19 +42,19 @@ export class DateTime {
     return DateTime.of(date.setDate(date.getDate() + num));
   }
 
-  isBefore(value: DateValue | DateTime) {
+  isBefore(value: DateTimeInput) {
     return this.compare(value) < 0;
   }
 
-  isAfter(value: DateValue | DateTime) {
+  isAfter(value: DateTimeInput) {
     return this.compare(value) > 0;
   }
 
-  isSame(value: DateValue | DateTime) {
+  isSame(value: DateTimeInput) {
     return this.compare(value) === 0;
   }
 
-  compare(value: DateValue | DateTime) {
+  compare(value: DateTimeInput) {
     return this.toDate().getTime() - DateTime.of(value).toDate().getTime();
   }
 

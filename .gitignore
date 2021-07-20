@@ -1,6 +1,8 @@
-node_modules/
-dist/
-puppeteer/
-test/
 .idea/
 *.iml
+
+node_modules/
+dist/
+
+puppeteer/user-data/
+backup/

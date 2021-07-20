@@ -1,46 +1,4 @@
-declare global {
-  interface Window {
-    ReactNativeWebView: {
-      postMessage: (message: string) => void;
-    };
-  }
-}
-
-type Action<T extends string, P = any> = {
-  type: T;
-  payload: P;
-};
-
-type TaskPayloadMap = {
-  TaskStart: void;
-  TaskEnd: void;
-  TaskSuccess: void;
-  TaskError: {
-    message: string;
-  };
-  TaskResult: {
-    message: string;
-  };
-  TaskStepStart: {
-    stepName: string;
-    index: number;
-  };
-  TaskStepEnd: {
-    stepName: string;
-    index: number;
-  };
-  TaskDelay: {
-    delayTime: number;
-  };
-};
-
-type TaskActionType = keyof TaskPayloadMap;
-
-type TaskActionMap = {
-  [key in TaskActionType]: Action<key, TaskPayloadMap[key]>;
-};
-
-type TaskAction = TaskActionMap[TaskActionType];
+import { TaskActions, TaskActionTypes, TaskPayloadMap } from "../types";
 
 function inRNWebView() {
   return Boolean(
@@ -48,53 +6,68 @@ function inRNWebView() {
   );
 }
 
-function notifyWindow<T extends TaskActionType>(
-  type: T,
-  payload: TaskPayloadMap[T]
-) {
-  const action = {
-    type,
-    payload,
-  } as TaskAction;
+function inPuppeteer() {
+  return Boolean(window.PuppeteerLog);
+}
 
-  console.log(action);
+function notifyWindow(action: TaskActions) {
+  console.log("[Action]", action);
 
   switch (action.type) {
-    case "TaskError":
     case "TaskResult":
-      alert(action.payload.message);
+    case "TaskError":
+      alert(action.payload);
       break;
     default:
   }
 }
 
-function notifyRNWebView<T extends TaskActionType>(
+function notifyPuppeteer(action: TaskActions) {
+  window.PuppeteerLog(JSON.stringify(action)).then();
+  notifyWindow(action);
+}
+
+function notifyRNWebView(action: TaskActions) {
+  window.ReactNativeWebView.postMessage(JSON.stringify(action));
+}
+
+export const notify = inRNWebView()
+  ? notifyRNWebView
+  : inPuppeteer()
+  ? notifyPuppeteer
+  : notifyWindow;
+
+function actionCreator<T extends TaskActionTypes>(
   type: T,
   payload: TaskPayloadMap[T]
 ) {
-  window.ReactNativeWebView.postMessage(
-    JSON.stringify(
-      payload
-        ? {
-            type,
-            payload,
-          }
-        : { type }
-    )
-  );
+  return (payload ? { type, payload } : { type }) as TaskActions;
 }
 
-const notify = inRNWebView() ? notifyRNWebView : notifyWindow;
-
-function makeNotifyDispatcher<T extends TaskActionType>(type: T) {
-  return (payload: TaskPayloadMap[T]) => notify(type, payload);
+function makeActionCreator<T extends TaskActionTypes>(type: T) {
+  return (payload: TaskPayloadMap[T]) => actionCreator(type, payload);
 }
 
-export const notifyTaskStart = makeNotifyDispatcher("TaskStart");
-export const notifyTaskEnd = makeNotifyDispatcher("TaskEnd");
-export const notifyTaskSuccess = makeNotifyDispatcher("TaskSuccess");
-export const notifyTaskError = makeNotifyDispatcher("TaskError");
-export const notifyTaskResult = makeNotifyDispatcher("TaskResult");
-export const notifyTaskStepStart = makeNotifyDispatcher("TaskStepStart");
-export const notifyTaskStepEnd = makeNotifyDispatcher("TaskStepEnd");
-export const notifyTaskDelay = makeNotifyDispatcher("TaskDelay");
+function makeActionNotifier<T extends TaskActionTypes>(type: T) {
+  return (payload: TaskPayloadMap[T]) => notify(actionCreator(type, payload));
+}
+
+export const taskStartAction = makeActionCreator("TaskStart");
+export const taskEndAction = makeActionCreator("TaskEnd");
+export const taskSuccessAction = makeActionCreator("TaskSuccess");
+export const taskErrorAction = makeActionCreator("TaskError");
+export const taskResultAction = makeActionCreator("TaskResult");
+export const taskStepStartAction = makeActionCreator("TaskStepStart");
+export const taskStepEndAction = makeActionCreator("TaskStepEnd");
+export const taskDelayAction = makeActionCreator("TaskDelay");
+export const taskMessageAction = makeActionCreator("TaskMessage");
+
+export const notifyTaskStart = makeActionNotifier("TaskStart");
+export const notifyTaskEnd = makeActionNotifier("TaskEnd");
+export const notifyTaskSuccess = makeActionNotifier("TaskSuccess");
+export const notifyTaskError = makeActionNotifier("TaskError");
+export const notifyTaskResult = makeActionNotifier("TaskResult");
+export const notifyTaskStepStart = makeActionNotifier("TaskStepStart");
+export const notifyTaskStepEnd = makeActionNotifier("TaskStepEnd");
+export const notifyTaskDelay = makeActionNotifier("TaskDelay");
+export const notifyTaskMessage = makeActionNotifier("TaskMessage");

@@ -4,14 +4,11 @@
       "pageName": "京豆明细",
       "pageUrl": "https://bean.m.jd.com/beanDetail/index.action"
     },
-    "jd-bean-plant": {
-      "pageName": "种豆得豆",
-      "pageUrl": "https://bean.m.jd.com/plantBean/index"
-    },
     "jd-shop-favorites": {
       "pageName": "店铺收藏",
       "pageUrl": "https://wqs.jd.com/my/fav/shop_fav.shtml"
     },
+
     "jd-sign-mother-baby": {
       "pageName": "母婴签到",
       "pageUrl": "https://prodev.m.jd.com/mall/active/3BbAVGQPDd6vTyHYjmAutXrKAos6/index.html",
@@ -23,6 +20,26 @@
       "pageUrl": "https://prodev.m.jd.com/mall/active/4SWjnZSCTHPYjE5T7j35rxxuMTb6/index.html",
       "refId": "jd-sign-flop",
       "dailyOnce": true
+    },
+
+    "jd-bean-home": {
+      "pageName": "领京豆主页",
+      "pageUrl": "https://h5.m.jd.com/rn/2E9A2bEeqQqBP9juVgPJvQQq6fJ/index.html",
+      "dailyOnce": true
+    },
+    "jd-bean-shake": {
+      "pageName": "摇京豆",
+      "pageUrl": "https://spa.jd.com/home",
+      "dailyOnce": true
+    },
+    "jd-bean-plant": {
+      "pageName": "种豆得豆",
+      "pageUrl": "https://bean.m.jd.com/plantBean/index"
+    },
+    "jd-bean-turntable": {
+      "pageName": "京豆福利转盘",
+      "pageUrl": "https://turntable.m.jd.com/?actId=jgpqtzjhvaoym",
+      "dailyOnce": true
     }
   },
   "groupMap": {
@@ -30,12 +47,12 @@
       "groupName": "京东 一般任务",
       "taskIds": ["jd-bean-detail", "jd-shop-favorites"]
     },
-    "jd-complex": {
-      "groupName": "京东 复杂任务",
-      "taskIds": ["jd-bean-plant"]
+    "jd-bean": {
+      "groupName": "领京豆",
+      "taskIds": ["jd-bean-home", "jd-bean-plant", "jd-bean-shake", "jd-bean-turntable"]
     },
-    "jd-daily-simple": {
-      "groupName": "京东 简单任务 每日一次",
+    "jd-sign": {
+      "groupName": "京东签到",
       "taskIds": ["jd-sign-mother-baby", "jd-sign-electrical-appliance"]
     }
   }

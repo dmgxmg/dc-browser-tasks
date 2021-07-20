@@ -1,9 +1,15 @@
-import { PageFlow } from "../model/PageFlow";
+import { pageFlow } from "../flow/page";
+import { flowDelay } from "../flow/flow";
+import { waitClickStep } from "../flow/element";
 
-PageFlow.of("https://prodev.m.jd.com/mall/active/")
-  .successViewExists(".sign_btn_dis")
-  .waitViewClickStep(".sign_btn", "立即翻牌")
-  .delayStep(2000)
-  .waitClickStep(".pop_close_icon", "关闭Modal")
-  .execute()
-  .then();
+pageFlow(
+  async function* () {
+    yield waitClickStep(".sign_btn", "立即翻牌");
+    yield flowDelay(2000);
+    yield waitClickStep(".pop_close_icon", "关闭Modal");
+  },
+  {
+    urls: "https://prodev.m.jd.com/mall/active/",
+    successElement: ".sign_btn_dis",
+  }
+);

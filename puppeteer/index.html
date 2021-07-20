@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>所有任务</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <div class="container justify-content-center">
+      <a class="navbar-brand" href="#">所有任务</a>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header">
+        任务列表
+      </div>
+      <div class="list-group list-group-flush list-group-numbered" id="app" v-cloak>
+        <a :href="task.pageUrl" class="list-group-item list-group-item-action" v-for="(task, index) of tasks" :key="task.id" @click.prevent="gotoTask(task.id)">
+          <div class="fw-bold">{{index+1}}. {{task.pageName}}</div>
+          <div><small>{{task.jsName}}</small></div>
+          <div><small>{{task.pageUrl}}</small></div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.1.5/dist/vue.global.prod.js"></script>
+  <script>
+    Vue.createApp({
+      data(){
+        return {tasks: [0]};
+      },
+      methods: {
+        gotoTask(id){
+          window.PuppeteerRunPageTask(id).then();
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
